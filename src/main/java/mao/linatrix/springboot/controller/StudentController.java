@@ -2,7 +2,6 @@ package mao.linatrix.springboot.controller;
 
 import jakarta.annotation.PostConstruct;
 import mao.linatrix.springboot.bean.Student;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("students")
 public class StudentController {
 
     private List<Student> students;
@@ -19,7 +19,7 @@ public class StudentController {
     @PostConstruct
     public ResponseEntity<String> loadData() {
         students = new ArrayList<>();
-        students.add(new Student(1, "Lassmi", "Randa"));
+        students.add(new Student(1, "Lasmi", "Randa"));
         students.add(new Student(2, "Dennsie", "Willja"));
         students.add(new Student(3, "Steve", "Earkel"));
         students.add(new Student(4, "Sandra", "Bullseye"));
@@ -40,7 +40,7 @@ public class StudentController {
     }
 
     // http://localhost:8181/students
-    @GetMapping("students")
+    @GetMapping
     public ResponseEntity<List<Student>> getStudents() {
         //return new ResponseEntity<>(students, HttpStatus.OK);
         return ResponseEntity.ok(students);
@@ -49,14 +49,14 @@ public class StudentController {
     // Spring BOOT REST API with Path Variable
     // {id} - URI template variable
     // http://localhost:8181/students/1
-    @GetMapping("students/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable("id") int studentId) {
         //return new ResponseEntity<>(new Student(studentId, "Marco", "Engel"), HttpStatus.OK);
         return ResponseEntity.ok(new Student(studentId, "Marco", "Engel"));
     }
 
     // http://localhost:8181/students/666/Marco/Teufel
-    @GetMapping("students/{studentId}/{firstName}/{lastName}")
+    @GetMapping("{studentId}/{firstName}/{lastName}")
     public ResponseEntity<Student> getStudentById(@PathVariable int studentId,
                                   @PathVariable("firstName") String studentFirstName,
                                   @PathVariable("lastName") String studentLastName) {
@@ -67,14 +67,14 @@ public class StudentController {
 
     // Spring BOOT REST API with Request Param
     // http://localhost:8181/students/query1?id=1
-    @GetMapping("students/query1")
+    @GetMapping("query1")
     public ResponseEntity<Student> getStudentByIdParam(@RequestParam("id") int studentId) {
         //return new ResponseEntity<>(students.get(studentId), HttpStatus.OK);
         return ResponseEntity.ok(students.get(studentId));
     }
 
     // http://localhost:8181/students/query2?id=2&fname=Lena&lname=Engel
-    @GetMapping("students/query2")
+    @GetMapping("query2")
     public ResponseEntity<Student> getStudentByAllParam(@RequestParam("id") int studentId,
                                         @RequestParam("fname") String studentFirstName,
                                         @RequestParam("lname") String studentLastName) {
@@ -87,7 +87,7 @@ public class StudentController {
     //               specific handler method)
     // @RequestBody (responsible for retrieving the HTTP request body and
     //               automatically converting it (e.g. JSON) to the Java object)
-    @PostMapping("students/create")
+    @PostMapping("create")
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         System.out.println("Student ID       : " + student.getId());
         System.out.println("Student Firstname: " + student.getFirstName());
@@ -98,7 +98,7 @@ public class StudentController {
     }
 
     // Spring Boot REST API that handles HTTP PUT Request - updating existing resource
-    @PutMapping("students/{id}/update")
+    @PutMapping("{id}/update")
     public ResponseEntity<List<Student>> updateStudent(@RequestBody Student student, @PathVariable("id") int studentId) {
         student.setId(studentId);
 
@@ -112,7 +112,7 @@ public class StudentController {
     }
 
     // Spring Boot REST API that handles HTTP DELETE Request - deleting the existing resource
-    @DeleteMapping("students/{id}/delete")
+    @DeleteMapping("{id}/delete")
     public ResponseEntity<String> deleteStudent(@PathVariable("id") int studentId) {
         int id = students.get(studentId - 1).getId();
         String lastName = students.get(studentId - 1).getLastName();

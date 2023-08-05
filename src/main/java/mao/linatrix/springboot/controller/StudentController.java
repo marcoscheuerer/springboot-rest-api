@@ -1,5 +1,6 @@
 package mao.linatrix.springboot.controller;
 
+import jakarta.annotation.PostConstruct;
 import mao.linatrix.springboot.bean.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,19 @@ import java.util.List;
 
 @RestController
 public class StudentController {
+
+    private List<Student> students;
+
+    @GetMapping("clear_list")
+    @PostConstruct
+    public void loadData() {
+        students = new ArrayList<>();
+        students.add(new Student(1, "Lassmi", "Randa"));
+        students.add(new Student(2, "Dennsie", "Willja"));
+        students.add(new Student(3, "Steve", "Earkel"));
+        students.add(new Student(4, "Sandra", "Bullseye"));
+        students.add(new Student(5, "Hulk", "Hogan"));
+    }
 
     // HTTP GET Request
     // http://localhost:8181/student
@@ -22,13 +36,6 @@ public class StudentController {
     // http://localhost:8181/students
     @GetMapping("students")
     public List<Student> getStudents() {
-        List<Student> students = new ArrayList<>();
-        students.add(new Student(1, "Lassmi", "Randa"));
-        students.add(new Student(2, "Dennsie", "Willja"));
-        students.add(new Student(3, "Steve", "Earkel"));
-        students.add(new Student(4, "Sandra", "Bullseye"));
-        students.add(new Student(5, "Hulk", "Hogan"));
-
         return students;
     }
 
@@ -52,7 +59,8 @@ public class StudentController {
     // http://localhost:8181/students/query1?id=1
     @GetMapping("students/query1")
     public Student getStudentByIdParam(@RequestParam("id") int studentId) {
-        return new Student(studentId, "Marco", "Scheuerer");
+        //return new Student(studentId, "Marco", "Scheuerer");
+        return students.get(studentId);
     }
 
     // http://localhost:8181/students/query2?id=2&fname=Lena&lname=Engel
@@ -63,7 +71,7 @@ public class StudentController {
         return new Student(studentId, studentFirstName, studentLastName);
     }
 
-    // Spring Boot REST API that handles HTTP POST Request
+    // Spring Boot REST API that handles HTTP POST Request - creating new resource
     // @PostMapping (repsonsible for mapping HTTP POST request onto
     //               specific handler method)
     // @RequestBody (responsible for retrieving the HTTP request body and
@@ -76,6 +84,20 @@ public class StudentController {
         System.out.println("Student Lastname : " + student.getLastName());
 
         return student;
+    }
+
+    // Spring Boot REST API that handles HTTP PUT Request - updating existing resource
+    @PutMapping("students/{id}/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Student> updateStudent(@RequestBody Student student, @PathVariable("id") int studentId) {
+        student.setId(studentId);
+
+        students.set(studentId - 1, student);
+
+        System.out.println(student.getFirstName());
+        System.out.println(student.getLastName());
+
+        return students;
     }
 
 }

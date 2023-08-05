@@ -1,10 +1,8 @@
 package mao.linatrix.springboot.controller;
 
 import mao.linatrix.springboot.bean.Student;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +61,21 @@ public class StudentController {
                                         @RequestParam("fname") String studentFirstName,
                                         @RequestParam("lname") String studentLastName) {
         return new Student(studentId, studentFirstName, studentLastName);
+    }
+
+    // Spring Boot REST API that handles HTTP POST Request
+    // @PostMapping (repsonsible for mapping HTTP POST request onto
+    //               specific handler method)
+    // @RequestBody (responsible for retrieving the HTTP request body and
+    //               automatically converting it (e.g. JSON) to the Java object)
+    @PostMapping("students/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Student createStudent(@RequestBody Student student) {
+        System.out.println("Student ID       : " + student.getId());
+        System.out.println("Student Firstname: " + student.getFirstName());
+        System.out.println("Student Lastname : " + student.getLastName());
+
+        return student;
     }
 
 }

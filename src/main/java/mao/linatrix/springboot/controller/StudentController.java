@@ -15,13 +15,15 @@ public class StudentController {
 
     @GetMapping("clear_list")
     @PostConstruct
-    public void loadData() {
+    public String loadData() {
         students = new ArrayList<>();
         students.add(new Student(1, "Lassmi", "Randa"));
         students.add(new Student(2, "Dennsie", "Willja"));
         students.add(new Student(3, "Steve", "Earkel"));
         students.add(new Student(4, "Sandra", "Bullseye"));
         students.add(new Student(5, "Hulk", "Hogan"));
+
+        return "List reloaded!";
     }
 
     // HTTP GET Request
@@ -98,6 +100,18 @@ public class StudentController {
         System.out.println(student.getLastName());
 
         return students;
+    }
+
+    // Spring Boot REST API that handles HTTP DELETE Request - deleting the existing resource
+    @DeleteMapping("students/{id}/delete")
+    public String deleteStudent(@PathVariable("id") int studentId) {
+        int id = students.get(studentId - 1).getId();
+        String lastName = students.get(studentId - 1).getLastName();
+        String firstName = students.get(studentId -1).getFirstName();
+
+        students.remove(studentId - 1);
+
+        return "Student at List Pos. " + studentId + " (ID " + id + ": " + lastName + ", " + firstName + ") deleted successfully";
     }
 
 }

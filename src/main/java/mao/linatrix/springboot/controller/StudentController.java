@@ -2,6 +2,7 @@ package mao.linatrix.springboot.controller;
 
 import mao.linatrix.springboot.bean.Student;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -30,6 +31,22 @@ public class StudentController {
         students.add(new Student(5, "Hulk", "Hogan"));
 
         return students;
+    }
+
+    // Spring BOOT REST API with Path Variable
+    // {id} - URI template variable
+    // http://localhost:8181/students/1
+    @GetMapping("students/{id}")
+    public Student getStudentById(@PathVariable("id") int studentId) {
+        return new Student(studentId, "Marco", "Engel");
+    }
+
+    // http://localhost:8181/students/666/Marco/Teufel
+    @GetMapping("students/{studentId}/{firstName}/{lastName}")
+    public Student getStudentById(@PathVariable int studentId,
+                                  @PathVariable("firstName") String studentFirstName,
+                                  @PathVariable("lastName") String studentLastName) {
+        return new Student(studentId, studentFirstName, studentLastName);
     }
 
 }
